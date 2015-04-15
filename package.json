@@ -2,7 +2,7 @@
     "name":        "gdo",
     "version":     "0.9.0",
     "description": "Group- and Dependency-based Ordering",
-    "keywords":    [ "group", "dependency", "order" ],
+    "keywords":    [ "group", "dependency", "order", "tag", "after", "before" ],
     "main":        "lib/gdo.js",
     "repository": {
         "type": "git",
