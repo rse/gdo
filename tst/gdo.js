@@ -22,7 +22,7 @@
 **  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-var GDO = require("../lib/gdo.js")
+var GDO = require("../lib/gdo.js").default
 
 describe("GDO Library", function () {
     it("base API availability", function () {
