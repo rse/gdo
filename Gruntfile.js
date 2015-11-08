@@ -45,7 +45,7 @@ module.exports = function (grunt) {
                 },
                 options: {
                     transform: [
-                        [ "babelify" ]
+                        [ "babelify", { presets: [ "es2015" ] } ]
                     ],
                     plugin: [
                         [ "minifyify", { map: "gdo.map", output: "lib/gdo.map" } ],

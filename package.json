@@ -1,6 +1,6 @@
 {
     "name":        "gdo",
-    "version":     "0.9.4",
+    "version":     "0.9.5",
     "description": "Group- and Dependency-based Ordering",
     "keywords":    [ "group", "dependency", "order", "tag", "after", "before" ],
     "main":        "lib/gdo.js",
@@ -19,9 +19,6 @@
     }],
     "homepage": "https://github.com/rse/gdo",
     "bugs":     "https://github.com/rse/gdo/issues",
-    "babel": {
-        "presets": [ "es2015" ]
-    },
     "dependencies": {
         "toposort":             "~0.2.12"
     },
