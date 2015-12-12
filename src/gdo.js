@@ -25,7 +25,7 @@
 import toposort from "toposort"
 
 /*  the API class  */
-export default class GDO {
+class GDO {
     constructor () {
         this.reset()
     }
@@ -164,13 +164,15 @@ export default class GDO {
         })
 
         /*  perform a topological sorting of the graph  */
-        let order = toposort.array(Object.keys(nodes), edges).reverse()
+        let elements = toposort.array(Object.keys(nodes), edges).reverse()
 
         /*  remove group sentinel values again  */
-        order = order.filter((element) => !element.match(/^@@@.+/))
+        elements = elements.filter((element) => !element.match(/^@@@.+/))
 
         /*  return the final ordered list of elements  */
-        return order
+        return elements
     }
 }
+
+module.exports = GDO
 
