@@ -52,6 +52,8 @@ class GDO {
         /*  determine all graph nodes  */
         let nodes = {}
         this._elements.forEach((element) => {
+            if (nodes[element.name])
+                throw new Error(`element named "${element.name}" occurs multiple times (has to be unique)`)
             nodes[element.name] = true
         })
 
@@ -66,6 +68,8 @@ class GDO {
             a group dependency always has at least one element it can be
             expanded to  */
         this._groups.forEach((group) => {
+            if (GRP[group])
+                throw new Error(`group named "${group}" occurs multiple times (has to be unique)`)
             GRP[group] = [ `@@@${group}` ]
             nodes[`@@@${group}`] = true
         })
@@ -95,9 +99,9 @@ class GDO {
 
             /*  remember mapping of tag to element  */
             tag.forEach((tag) => {
-                let idx = this._groups.indexOf(tag)
-                if (idx > -1)
-                    throw new Error(`invalid tag (cannot be same name as group): "${tag}"`)
+                if (this._groups.indexOf(tag) > -1)
+                    throw new Error(`element "${element.name}" has invalid tag "${tag}" ` +
+                        "(tag cannot have same name as existing group)")
                 if (TAG[tag] === undefined)
                     TAG[tag] = []
                 TAG[tag].push(name)
@@ -107,8 +111,11 @@ class GDO {
             if (group !== undefined) {
                 let idx = this._groups.indexOf(group)
                 if (idx === -1)
-                    throw new Error(`unknown group: "${group}"`)
+                    throw new Error(`element "${element.name}" has invalid group "${group}" ` +
+                        "(group has to be explicitly defined)")
                 GRP[group].push(name)
+
+                /*  add implicit before/after for elements of intermediate groups  */
                 if (idx < this._groups.length - 1)
                     BEFORE[name].push(this._groups[idx + 1])
                 if (idx > 0)
@@ -117,21 +124,30 @@ class GDO {
         })
 
         /*  helper function: insert edge into DAG  */
-        let insertDAG = (list, order) => {
+        let insertDAG = (name, list, order) => {
             list.forEach((element) => {
                 let elements
-                if (TAG[element] !== undefined)
+                let via
+                if (TAG[element] !== undefined) {
                     elements = TAG[element]
-                else if (GRP[element] !== undefined)
+                    via = "tag-based"
+                }
+                else if (GRP[element] !== undefined) {
                     elements = GRP[element]
-                else
+                    via = "group-based"
+                }
+                else {
                     elements = [ element ]
+                    via = "direct"
+                }
                 elements.forEach((element) => {
-                    let [ before, after ] = order(element)
+                    let [ before, after ] = order(name, element)
                     if (nodes[before] === undefined)
-                        throw new Error(`unknown element: ${before}`)
+                        throw new Error(`element "${name}" has invalid ${via} before-reference ` +
+                            `to unknown element "${before}"`)
                     if (nodes[after] === undefined)
-                        throw new Error(`unknown element: ${after}`)
+                        throw new Error(`element "${name}" has invalid ${via} after-reference ` +
+                            `to unknown element "${after}"`)
                     if (DAG[before] === undefined)
                         DAG[before] = {}
                     DAG[before][after] = true
@@ -148,11 +164,11 @@ class GDO {
 
             /*  insert all "after" dependencies into DAG
                 (as standard "after" dependencies)  */
-            insertDAG(after,  (element) => [ name, element ])
+            insertDAG(name, after,  (name, element) => [ name, element ])
 
             /*  insert all "before" dependencies into DAG
                 (as inverse "after" dependencies)  */
-            insertDAG(before, (element) => [ element, name ])
+            insertDAG(name, before, (name, element) => [ element, name ])
         })
 
         /*  determine resulting graph edges  */
