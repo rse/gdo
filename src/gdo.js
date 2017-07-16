@@ -164,11 +164,11 @@ class GDO {
 
             /*  insert all "after" dependencies into DAG
                 (as standard "after" dependencies)  */
-            insertDAG(name, after,  (name, element) => [ name, element ])
+            insertDAG(name, after,  (name, element) => [ element, name ])
 
             /*  insert all "before" dependencies into DAG
                 (as inverse "after" dependencies)  */
-            insertDAG(name, before, (name, element) => [ element, name ])
+            insertDAG(name, before, (name, element) => [ name, element ])
         })
 
         /*  determine resulting graph edges  */
@@ -180,7 +180,7 @@ class GDO {
         })
 
         /*  perform a topological sorting of the graph  */
-        let elements = toposort.array(Object.keys(nodes), edges).reverse()
+        let elements = toposort.array(Object.keys(nodes), edges)
 
         /*  remove group sentinel values again  */
         elements = elements.filter((element) => !element.match(/^@@@.+/))
