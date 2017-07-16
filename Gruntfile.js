@@ -35,7 +35,7 @@ module.exports = function (grunt) {
             options: {
                 jshintrc: "jshint.json"
             },
-            "gruntfile":  [ "Gruntfile.js" ],
+            "gruntfile": [ "Gruntfile.js" ],
             "gdo": [ "src/**/*.js", "tst/**/*.js" ]
         },
         browserify: {
@@ -45,7 +45,7 @@ module.exports = function (grunt) {
                 },
                 options: {
                     transform: [
-                        [ "babelify", { presets: [ "es2015" ] } ]
+                        [ "babelify", { presets: [ "es2015", "es2016", "es2017" ] } ]
                     ],
                     plugin: [
                         [ "minifyify", { map: "gdo.map", output: "lib/gdo.map" } ],
