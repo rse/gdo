@@ -44,10 +44,18 @@ module.exports = function (grunt) {
                 },
                 options: {
                     transform: [
-                        [ "babelify", { presets: [ "es2015", "es2016", "es2017" ] } ]
+                        [ "babelify", {
+                            presets: [
+                                [ "@babel/preset-env", {
+                                    "targets": {
+                                        "browsers": "last 8 versions, > 1%, ie 11"
+                                    }
+                                } ]
+                            ]
+                        } ],
+                        [ "uglifyify", { sourceMap: false, global: true } ]
                     ],
                     plugin: [
-                        [ "minifyify", { map: "gdo.map", output: "lib/gdo.map" } ],
                         [ "browserify-derequire" ],
                         [ "browserify-header" ]
                     ],
@@ -56,7 +64,7 @@ module.exports = function (grunt) {
                     ],
                     browserifyOptions: {
                         standalone: "GDO",
-                        debug: true
+                        debug: false
                     }
                 }
             }
