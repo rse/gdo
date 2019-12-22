@@ -50,7 +50,7 @@ class GDO {
         of tags, groups and dependencies  */
     order () {
         /*  determine all graph nodes  */
-        let nodes = {}
+        const nodes = {}
         this._elements.forEach((element) => {
             if (nodes[element.name])
                 throw new Error(`element named "${element.name}" occurs multiple times (has to be unique)`)
@@ -58,11 +58,11 @@ class GDO {
         })
 
         /*  internal helper data structures  */
-        let DAG    = {}
-        let TAG    = {}
-        let GRP    = {}
-        let BEFORE = {}
-        let AFTER  = {}
+        const DAG    = {}
+        const TAG    = {}
+        const GRP    = {}
+        const BEFORE = {}
+        const AFTER  = {}
 
         /*  pre-fill all groups with sentinel elements to ensure that
             a group dependency always has at least one element it can be
@@ -75,7 +75,7 @@ class GDO {
         })
 
         /*  helper function for taking zero or more strings out of a field  */
-        let takeField = (field) => {
+        const takeField = (field) => {
             if (typeof field === "object" && field instanceof Array)
                 return field
             else if (typeof field === "string")
@@ -87,11 +87,11 @@ class GDO {
         /*  pass 1: iterate over all elements and pre-process information  */
         this._elements.forEach((element) => {
             /*  take information of element  */
-            let name   = element.name
-            let tag    = takeField(element.tag)
-            let before = takeField(element.before)
-            let after  = takeField(element.after)
-            let group  = element.group
+            const name   = element.name
+            const tag    = takeField(element.tag)
+            const before = takeField(element.before)
+            const after  = takeField(element.after)
+            const group  = element.group
 
             /*  remember (a mutable copy of) after/before information  */
             BEFORE[name] = [].concat(before)
@@ -109,7 +109,7 @@ class GDO {
 
             /*  remember group of module  */
             if (group !== undefined) {
-                let idx = this._groups.indexOf(group)
+                const idx = this._groups.indexOf(group)
                 if (idx === -1)
                     throw new Error(`element "${element.name}" has invalid group "${group}" ` +
                         "(group has to be explicitly defined)")
@@ -124,7 +124,7 @@ class GDO {
         })
 
         /*  helper function: insert edge into DAG  */
-        let insertDAG = (name, list, order) => {
+        const insertDAG = (name, list, order) => {
             list.forEach((element) => {
                 let elements
                 let via
@@ -141,7 +141,7 @@ class GDO {
                     via = "direct"
                 }
                 elements.forEach((element) => {
-                    let [ before, after ] = order(name, element)
+                    const [ before, after ] = order(name, element)
                     if (nodes[before] === undefined)
                         throw new Error(`element "${name}" has invalid ${via} before-reference ` +
                             `to unknown element "${before}"`)
@@ -158,9 +158,9 @@ class GDO {
         /*  pass 2: iterate over all elements and process "after" and "before" information  */
         this._elements.forEach((element) => {
             /*  take information of module  */
-            let name   = element.name
-            let before = BEFORE[name]
-            let after  = AFTER[name]
+            const name   = element.name
+            const before = BEFORE[name]
+            const after  = AFTER[name]
 
             /*  insert all "after" dependencies into DAG
                 (as standard "after" dependencies)  */
@@ -172,7 +172,7 @@ class GDO {
         })
 
         /*  determine resulting graph edges  */
-        let edges = []
+        const edges = []
         Object.keys(DAG).forEach((before) => {
             Object.keys(DAG[before]).forEach((after) => {
                 edges.push([ before, after ])
