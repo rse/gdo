@@ -22,25 +22,25 @@
 **  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-var GDO = require("../lib/gdo.js")
+const GDO = require("../lib/gdo.js")
 
 describe("GDO Library", function () {
     it("base API availability", function () {
-        var gdo = new GDO()
+        const gdo = new GDO()
         expect(gdo).to.respondTo("reset")
         expect(gdo).to.respondTo("groups")
         expect(gdo).to.respondTo("element")
         expect(gdo).to.respondTo("order")
     })
     it("basic ordering with dependencies only", function () {
-        var gdo = new GDO()
+        const gdo = new GDO()
         gdo.element({ name: "1" })
         gdo.element({ name: "2", after: "1" })
         gdo.element({ name: "3", after: "2" })
         expect(gdo.order()).to.be.deep.equal([ "1", "2", "3" ])
     })
     it("basic ordering with groups only", function () {
-        var gdo = new GDO()
+        const gdo = new GDO()
         gdo.groups([ "A", "B", "C" ])
         gdo.element({ name: "1", group: "A" })
         gdo.element({ name: "2", group: "B" })
@@ -48,7 +48,7 @@ describe("GDO Library", function () {
         expect(gdo.order()).to.be.deep.equal([ "1", "2", "3" ])
     })
     it("basic ordering with tags only", function () {
-        var gdo = new GDO()
+        const gdo = new GDO()
         gdo.element({ name: "1",  tag: "A" })
         gdo.element({ name: "2a", tag: "B", after: "A", before: [ "C", "2b" ] })
         gdo.element({ name: "2b", tag: "B", after: [ "A", "2a" ], before: "C" })
@@ -56,7 +56,7 @@ describe("GDO Library", function () {
         expect(gdo.order()).to.be.deep.equal([ "1", "2a", "2b", "3" ])
     })
     it("basic ordering with groups and dependencies", function () {
-        var gdo = new GDO()
+        const gdo = new GDO()
         gdo.groups([ "A", "B", "C" ])
         gdo.element({ name: "1", group: "A" })
         gdo.element({ name: "2a", group: "B" })
@@ -66,7 +66,7 @@ describe("GDO Library", function () {
         expect(gdo.order()).to.be.deep.equal([ "1", "2a", "2b", "2c", "3" ])
     })
     it("basic ordering with groups, tags and dependencies", function () {
-        var gdo = new GDO()
+        const gdo = new GDO()
         gdo.groups([ "A", "B", "C" ])
         gdo.element({ name: "1",  group: "A" })
         gdo.element({ name: "2a", group: "B", tag: "TWO-A" })
